@@ -41,29 +41,30 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Question addAnswerToDb(String emailid, Question question) {
+    public String addAnswerToDb(String emailid, Question question) {
         boolean flag=true;
         UserCurrent userCurrent=userProfileRepository.findById(emailid).get();
-        List<Answer> givenAnsweres=question.getQuestion();
+        String givenQuestion=question.getQuestion();
         List<Question> mongoAns=userCurrent.getAnswers();
 
-        for(int i=0;i<mongoQues.size();i++){
-            if(mongoQues.get(i).getQuestion()==givenQuestion) {
-                mongoQues.set(i, question);
+        for(int i=0;i<mongoAns.size();i++){
+            if(mongoAns.get(i).getQuestion()==givenQuestion) {
+                mongoAns.set(i, question);
                 flag = false;
                 break;
             }
         }
         if(flag==true){
-            mongoQues.add(question);
+            mongoAns.add(question);
         }
-        userCurrent.setQuestions(mongoQues);
+        userCurrent.setQuestions(mongoAns);
         userProfileRepository.save(userCurrent);
         return "Success";
     }
 
     @Override
     public UserCurrent returnAllInfoFromDb(String emailid) {
-        return null;
+        UserCurrent userCurrent=userProfileRepository.findById(emailid).get();
+        return userCurrent;
     }
 }

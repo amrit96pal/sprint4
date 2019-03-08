@@ -30,7 +30,7 @@ public class UserProfileController {
 
     @PostMapping("/answer/{emailid}")
     public ResponseEntity<?> addAnswer(@PathVariable String emailid, @RequestBody Question question){
-        return new ResponseEntity<>(this.userProfileService.addAnswerToDb(emailid,question),HttpStatus.OK);
+        return new ResponseEntity<String>(this.userProfileService.addAnswerToDb(emailid,question),HttpStatus.OK);
     }
 
     @GetMapping("/getall/{emailid}")
