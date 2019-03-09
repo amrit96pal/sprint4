@@ -1,0 +1,11 @@
+server:
+  context-path: /myprofile
+  port: 8091
+spring:
+  application:
+    name: BootMongo
+  data:
+    mongodb:
+      database: myprofile_db
+      host: localhost
+      port: 27017
