@@ -9,3 +9,8 @@ spring:
       database: myprofile_db
       host: localhost
       port: 27017
+jsi:
+  rabbitmq:
+    queue: jsi.queue1
+    exchange: jsi.direct1
+    routingkey: jsi.routingkey1

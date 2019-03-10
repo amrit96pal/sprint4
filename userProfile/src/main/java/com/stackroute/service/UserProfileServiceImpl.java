@@ -5,9 +5,11 @@ import com.stackroute.domain.Question;
 import com.stackroute.domain.UserCurrent;
 import com.stackroute.repository.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserProfileServiceImpl implements UserProfileService {
 
     UserProfileRepository userProfileRepository;
@@ -66,5 +68,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserCurrent returnAllInfoFromDb(String emailid) {
         UserCurrent userCurrent=userProfileRepository.findById(emailid).get();
         return userCurrent;
+    }
+
+    @Override
+    public UserCurrent addnewUser(UserCurrent userCurrent) {
+        return userProfileRepository.save(userCurrent);
     }
 }

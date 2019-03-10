@@ -7,13 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ public class QuestionServiceImpl implements QuestionService{
         questionObject.setQuestionId(questionRepository.findAll().size() + 1);
         Question savedQuestion = questionRepository.save(questionObject);
         QuestionDTO questionDTO = new QuestionDTO(Actions.POST_QUESTION, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-        produceMsg(questionDTO);
+//        produceMsg(questionDTO);
         question(savedQuestion);
         return savedQuestion;
     }
@@ -85,7 +88,7 @@ public class QuestionServiceImpl implements QuestionService{
             }
             Question savedQuestion = questionRepository.save(question);
             QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_ANSWER, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-            produceMsg(questionDTO);
+//            produceMsg(questionDTO);
             answer(savedQuestion,answer.getUser().getEmail());
             return savedQuestion;
         } else
@@ -119,7 +122,7 @@ public class QuestionServiceImpl implements QuestionService{
             }
             Question savedQuestion = questionRepository.save(question);
             QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_COMMENT, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-            produceMsg(questionDTO);
+//            produceMsg(questionDTO);
             question(savedQuestion);
             return savedQuestion;
         } else
@@ -148,7 +151,7 @@ public class QuestionServiceImpl implements QuestionService{
             if (flag){
                 Question savedQuestion = questionRepository.save(question);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_COMMENT_REPLY, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 question(savedQuestion);
                 return savedQuestion;
             }
@@ -187,7 +190,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,email);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_COMMENT, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else {
@@ -239,7 +242,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,email);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_COMMENT_REPLY, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else if (!commentFlag){
@@ -263,7 +266,7 @@ public class QuestionServiceImpl implements QuestionService{
             question.setUpvotes(upvotes+1);
             Question savedQuestion = questionRepository.save(question);
             QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_UPVOTE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-            produceMsg(questionDTO);
+//            produceMsg(questionDTO);
             question(savedQuestion);
             return savedQuestion;
         } else
@@ -279,7 +282,7 @@ public class QuestionServiceImpl implements QuestionService{
             question.setDownvotes(downvotes+1);
             Question savedQuestion = questionRepository.save(question);
             QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_DOWNVOTE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-            produceMsg(questionDTO);
+//            produceMsg(questionDTO);
             question(savedQuestion);
             return savedQuestion;
         } else
@@ -309,7 +312,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,email);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_UPVOTE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else {
@@ -343,7 +346,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,email);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_DOWNVOTE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else {
@@ -375,7 +378,7 @@ public class QuestionServiceImpl implements QuestionService{
             if (flag){
                 Question savedQuestion = questionRepository.save(question);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_COMMENT_LIKE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 question(savedQuestion);
                 return savedQuestion;
             }
@@ -421,7 +424,7 @@ public class QuestionServiceImpl implements QuestionService{
             if (commentFlag && replyFlag){
                 Question savedQuestion = questionRepository.save(question);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.QUESTION_COMMENT_REPLY_LIKE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 question(savedQuestion);
                 return savedQuestion;
             }
@@ -469,7 +472,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,answer.getUser().getEmail());
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_COMMENT_LIKE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else if (!commentFlag){
@@ -528,7 +531,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,answer.getUser().getEmail());
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_COMMENT_REPLY_LIKE, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else if (!commentFlag){
@@ -570,7 +573,7 @@ public class QuestionServiceImpl implements QuestionService{
                 Question savedQuestion = questionRepository.save(question);
                 answer(savedQuestion,email);
                 QuestionDTO questionDTO = new QuestionDTO(Actions.ANSWER_ACCEPT, savedQuestion.getQuestionId(), savedQuestion.getQuestion(), savedQuestion.getDescription(), savedQuestion.getTopics(), savedQuestion.getUpvotes(), savedQuestion.getTimestamp(), savedQuestion.getDownvotes(), savedQuestion.getUser(), savedQuestion.getComment(), savedQuestion.getAnswer());
-                produceMsg(questionDTO);
+//                produceMsg(questionDTO);
                 return savedQuestion;
             }
             else {
@@ -600,20 +603,18 @@ public class QuestionServiceImpl implements QuestionService{
 
     }
 
-    public HttpResponse question(Question savedQuestion) throws IOException {
-        DefaultHttpClient client = new DefaultHttpClient();
-        String url = "http://localhost:8091/question/" + savedQuestion.getUser().getEmail();
-        HttpPost post = new HttpPost(url);
-        post.setEntity((HttpEntity) savedQuestion);
-        return client.execute(post);
+    public void question(Question savedQuestion) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        URI url = URI.create("http://localhost:8091/question/" + savedQuestion.getUser().getEmail());
+        restTemplate.put(url,savedQuestion);
+        System.out.println("Worked");
     }
 
-    public HttpResponse answer(Question savedQuestion, String email) throws IOException {
-        DefaultHttpClient client = new DefaultHttpClient();
-        String url = "http://localhost:8091/answer/" + email;
-        HttpPost post = new HttpPost(url);
-        post.setEntity((HttpEntity) savedQuestion);
-        return client.execute(post);
+    public void answer(Question savedQuestion, String email) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        URI url = URI.create("http://localhost:8091/answer/" + email);
+       restTemplate.put(url,savedQuestion);
+        System.out.println("Worked");
     }
 
     //RabbitMq message producer method

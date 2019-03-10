@@ -5,6 +5,7 @@ import com.stackroute.domain.Question;
 import com.stackroute.domain.UserCurrent;
 import com.stackroute.service.UserProfileService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class UserProfileController {
 
-    UserProfileService userProfileService;
+    private UserProfileService userProfileService;
 
     @Autowired
     public UserProfileController(UserProfileService userProfileService) {
@@ -23,12 +24,13 @@ public class UserProfileController {
     }
 
 
-    @PostMapping("/question/{emailid}")
+    @PutMapping("/question/{emailid}")
     public ResponseEntity<?> addQuestion(@PathVariable String emailid, @RequestBody Question question){
+        System.out.println(question);
         return new ResponseEntity<String>(this.userProfileService.addQuestionToDB(emailid,question), HttpStatus.OK);
     }
 
-    @PostMapping("/answer/{emailid}")
+    @PutMapping("/answer/{emailid}")
     public ResponseEntity<?> addAnswer(@PathVariable String emailid, @RequestBody Question question){
         return new ResponseEntity<String>(this.userProfileService.addAnswerToDb(emailid,question),HttpStatus.OK);
     }
@@ -38,4 +40,12 @@ public class UserProfileController {
         return new ResponseEntity<UserCurrent>(this.userProfileService.returnAllInfoFromDb(emailid),HttpStatus.FOUND);
     }
 
-}
+
+//    @RabbitListener(queues = "${jse.rabbitmq.queue}")
+    @PostMapping("/user")
+    public void receivedMessage(@RequestBody UserCurrent userCurrent) {
+        log.info("Received Message: " + userCurrent);
+        userProfileService.addnewUser(userCurrent);
+    }
+
+    }

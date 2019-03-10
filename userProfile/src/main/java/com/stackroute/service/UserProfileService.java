@@ -9,4 +9,6 @@ public interface UserProfileService {
     String addAnswerToDb(String emailid, Question question);
 
     UserCurrent returnAllInfoFromDb(String emailid);
+
+    UserCurrent addnewUser(UserCurrent userCurrent);
 }
