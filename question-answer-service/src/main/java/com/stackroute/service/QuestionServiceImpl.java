@@ -612,7 +612,7 @@ public class QuestionServiceImpl implements QuestionService{
 
     public void answer(Question savedQuestion, String email) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
-        URI url = URI.create("http://localhost:8091/answer/" + email);
+        URI url = URI.create("http://localhost:8091/answer/" + email.trim());
        restTemplate.put(url,savedQuestion);
         System.out.println("Worked");
     }
