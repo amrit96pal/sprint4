@@ -3,10 +3,12 @@ package com.stackroute.service;
 import com.stackroute.domain.Answer;
 import com.stackroute.domain.Question;
 import com.stackroute.domain.UserCurrent;
+import com.stackroute.domain.UserDTO;
 import com.stackroute.repository.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,7 +73,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserCurrent addnewUser(UserCurrent userCurrent) {
+    public UserCurrent addnewUser(UserDTO userDTO) {
+        List<Question> questionList = new ArrayList<>();
+        List<Question> answerList = new ArrayList<>();
+        UserCurrent userCurrent = new UserCurrent(userDTO.getEmail(),userDTO.getFirstName(),0,userDTO.getInterests(),0,questionList,answerList);
         return userProfileRepository.save(userCurrent);
     }
 }

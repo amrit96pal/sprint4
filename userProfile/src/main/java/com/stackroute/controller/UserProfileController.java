@@ -3,6 +3,7 @@ package com.stackroute.controller;
 
 import com.stackroute.domain.Question;
 import com.stackroute.domain.UserCurrent;
+import com.stackroute.domain.UserDTO;
 import com.stackroute.service.UserProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -41,11 +42,10 @@ public class UserProfileController {
     }
 
 
-//    @RabbitListener(queues = "${jse.rabbitmq.queue}")
-    @PostMapping("/user")
-    public void receivedMessage(@RequestBody UserCurrent userCurrent) {
-        log.info("Received Message: " + userCurrent);
-        userProfileService.addnewUser(userCurrent);
+   @RabbitListener(queues = "${jsi.rabbitmq.queue}")
+    public void receivedMessage(UserDTO userDTO) {
+        log.info("Received Message: " + userDTO);
+        userProfileService.addnewUser(userDTO);
     }
 
     }

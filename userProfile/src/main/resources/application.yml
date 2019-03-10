@@ -11,6 +11,6 @@ spring:
       port: 27017
 jsi:
   rabbitmq:
-    queue: jsi.queue1
-    exchange: jsi.direct1
-    routingkey: jsi.routingkey1
+    queue: jsi.queuereg
+    exchange: jsi.directreg
+    routingkey: jsi.routingkeyreg
