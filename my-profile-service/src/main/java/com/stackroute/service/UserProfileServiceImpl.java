@@ -30,7 +30,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         List<Question> mongoQues=userCurrent.getQuestions();
 
         for(int i=0;i<mongoQues.size();i++){
-            if(mongoQues.get(i).getQuestion()==givenQuestion) {
+            if(mongoQues.get(i).getQuestion().equals(givenQuestion)) {
                 mongoQues.set(i, question);
                 flag = false;
                 break;
@@ -41,19 +41,37 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
         userCurrent.setQuestions(mongoQues);
         userProfileRepository.save(userCurrent);
+
+        List<Answer> answerList=question.getAnswer();
+        if(answerList.size()>0){
+            for (Answer answer:answerList){
+                addAnswerForMultipleUsers(answer.getUser().getEmail(),question);
+            }
+        }
         return "Success";
     }
 
     @Override
     public String addAnswerToDb(String emailid, Question question) {
+        String quesEmail=question.getUser().getEmail();
+        addQuestionToDB(quesEmail,question);
+        List<Answer> ansList=question.getAnswer();
+        for(Answer answer :ansList){
+            addAnswerForMultipleUsers(answer.getUser().getEmail(),question);
+        }
+        return "Success";
+    }
+
+    public void addAnswerForMultipleUsers(String emailid,Question question){
         boolean flag=true;
         UserCurrent userCurrent=userProfileRepository.findById(emailid).get();
         String givenQuestion=question.getQuestion();
         List<Question> mongoAns=userCurrent.getAnswers();
 
         for(int i=0;i<mongoAns.size();i++){
-            if(mongoAns.get(i).getQuestion()==givenQuestion) {
+            if(mongoAns.get(i).getQuestion().equals(givenQuestion)) {
                 mongoAns.set(i, question);
+
                 flag = false;
                 break;
             }
@@ -63,8 +81,9 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
         userCurrent.setQuestions(mongoAns);
         userProfileRepository.save(userCurrent);
-        return "Success";
     }
+
+
 
     @Override
     public UserCurrent returnAllInfoFromDb(String emailid) {
@@ -76,7 +95,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     public UserCurrent addnewUser(UserDTO userDTO) {
         List<Question> questionList = new ArrayList<>();
         List<Question> answerList = new ArrayList<>();
-        UserCurrent userCurrent = new UserCurrent(userDTO.getEmail(),userDTO.getFirstName(),0,userDTO.getInterests(),0,questionList,answerList);
+        UserCurrent userCurrent = new UserCurrent(userDTO.getEmail(),userDTO.getFirstName(),0,userDTO.getInterests(),0,questionList,answerList,"imageurl");
         return userProfileRepository.save(userCurrent);
     }
 }

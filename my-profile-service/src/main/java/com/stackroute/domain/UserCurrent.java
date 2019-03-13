@@ -25,5 +25,6 @@ public class UserCurrent {
     private int views;
     private List<Question> questions;
     private List<Question> answers;
+    private String imageURL;
 
 }
